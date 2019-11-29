@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Indexed Unsorted List">
+
+  <test name="IUDoubleLinkedList" verbose="2">             
+  
+  	<parameter name="listType" value="doubleLinkedList"/> 
+  	
+    <classes>     
+      <class name="Test_1_emptyList"/>
+      <class name="Test_6_A_addToFrontB_BA"/> 
+      <class name="Test_39_ABC_remove1_AC"/> 
+    </classes>
+    
+  </test> <!-- IUDoubleLinkedList -->
+
+</suite> <!-- Indexed Unsorted List -->
