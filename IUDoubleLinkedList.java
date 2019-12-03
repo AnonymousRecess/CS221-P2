@@ -405,8 +405,6 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
 	private class ListImplementedIterator implements ListIterator<T> {
 		private DLLNode<T> next; // node indicating next
-		private DLLNode<T> previous; // node indicating previous
-		private DLLNode<T> current; // node indicating current position
 		private DLLNode<T> end; // node indicating end of linked list
 		private int iteratorModCount; // count to tell if list has changed
 		private Boolean canRemove; // flag for if a node can be removed
@@ -423,8 +421,6 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 			next = head; // start next at first in list
 			iteratorModCount = modCount; // no differences when created
 			canRemove = false; // needs to call next first
-			current = null; // before next
-			previous = null; // before current
 			canSet = false;
 			if(!isEmpty())
 			tail.setNext(end);
@@ -449,6 +445,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 				throw new NoSuchElementException("End of list");
 			}
 			T value = next.getElement(); // temp variable for element at next
+			next.getNext().setPrevious(next);
 			next = next.getNext(); // finally set next to next node
 			canRemove = true; // can be removed after successful next call
 			calledLast = true;
@@ -554,10 +551,8 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 						next.getPrevious().getPrevious().setNext(next); // can't call method on null, which is what previous is at current = head
 						next.setPrevious(next.getPrevious().getPrevious());
 					}
-					if (next == end) {
-						tail = next.getPrevious(); // maintain tail reference
-					}
-				}
+					
+				}	
 				else
 				{
 					if(next == head)
@@ -573,9 +568,9 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 					if(next == tail)
 					{
 						tail = next.getPrevious();
-						next = end;
+						
 					}
-					
+					next = next.getNext(); //MAYBE NOT
 				}
 			}
 			else
