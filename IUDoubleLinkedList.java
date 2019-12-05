@@ -439,7 +439,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 			canSet = false; // needs a call to next or previous first
 			if(!isEmpty())
 			tail.setNext(end); // can't call if empty
-			if(count-1 < index || index < 0) // check bounds
+			if(count < index || index < 0) // check bounds
 			{
 				throw new IndexOutOfBoundsException();
 			}

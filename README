@@ -1,0 +1,81 @@
+# Project 2 Double-Linked List
+****************
+* Class: CS 221-S3
+* Date: 12/3/2019
+* Author: Jeff Kahn
+**************** 
+
+## OVERVIEW:
+
+This program implements a doubly linked list. The program implements
+generics to store T elements. Both iterator and listiterator interfaces
+are implemented to allow for traversal through the doubly linked list.
+
+INCLUDED FILES:
+
+*IUDoubleLinkedList.java
+...
+File that implements the doubly linked list, iterator and listiterator.
+...
+*DLLNode.java
+...
+Object designed to store elements and addresses for 
+the next and previous address in the list.
+...
+*iuDoubleLinkedList.xml
+...
+Runs test classes to ensure functionality of DoubleLinkedList and Iterator.
+...
+* TestClasse(s).java
+...
+Tests run by iuDoubleLinkedList.xml to ensure list functionality.
+...
+* README
+...
+This file
+...
+
+## COMPILING AND RUNNING
+
+...
+Navigate to the directory that includes all source files.
+Compile by running the command:
+$ `javac *.java`
+
+Run the tester using:
+$ `java org.testng.TestNG iuDoubleLinkedList.xml`
+
+Console output will display a list of tests passed and failed.
+...
+
+## PROGRAM DESIGN AND IMPORTANT CONCEPTS:
+...
+### Organization
+
+The structure for this program was heavily governed by the IndexedUnsortedList
+interface that was provided for the project. This interface laid foundations 
+for methods that were expected to be implemented, exception handling and the 
+assignment's scope. A DLLNode class was also necessary to implement a doubly linked-list data 
+structure. Likewise, the Iterator and ListIterator interfaces also added guidance to the development 
+of the program. Working with the methods from the IUDoubleLinkedList methods provided a solid foundation
+for manipulating the Iterator and ListIterator's methods.
+
+## TESTING
+
+Testing of this program was primarily handled thorough > 894 test cases for the list, 681 tests for the 
+Iterator and 3,420 tests for the ListIterator. These tests were designed to test for edge cases for 
+the list's various possible states. Furthermore, exception handling for invalid states and indexes
+were prominent throughout the list. To ensure fidelity of my custom index checking, I also tested the starting index ListIterator
+constructor by creating a ListIteratorIndexTest.
+
+## DISCUSSION
+
+The IUSingleLinkedList project did a great job preparing me for the IUDoubleLinkedList implementation.
+Still, the usual difficulties with forgetting to connect certain previous references did crop up.
+Fortunately, these issues were minor, until the listIterator had to be implemented. The struggle that
+I had understanding that the next node was representing a cursor, really threw me for quite a while.
+Personally, I would have called the variable cursor, since with the .next and .previous, the reference 
+name of next became confusing. On a positive note, the debugging tool saw quite a fair bit of use, and
+my comfort with using the tool increased exponentially as did my understanding of linked lists and 
+iterators. I also found the section of the assignment regarding the modification for the listIterator
+tests to be fairly ambiguous in its regaling.

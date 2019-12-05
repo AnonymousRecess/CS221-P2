@@ -10,8 +10,29 @@
       <class name="Test_1_emptyList"/>
       <class name="Test_6_A_addToFrontB_BA"/> 
       <class name="Test_39_ABC_remove1_AC"/> 
+<class name="Test_2_addToFrontA_A"/>
+	  <class name="Test_3_addToRearA_A"/>
+	  <class name="Test_4_addA_A"/>
+	  <class name="Test_5_add0A_A"/>
+	  <class name="Test_7_A_addToRearB_AB"/>
+	  <class name="Test_8_A_addAfterBA_AB"/>
+	  <class name="Test_12_A_removeFirst_"/>
+	  <class name="Test_13_A_removeLast_"/>
+	  <class name="Test_14_A_removeA_"/>
+	  <class name="Test_15_A_remove0_"/>
+	  <class name="Test_16_A_set0B_B"/>
+	  <class name="Test_18_AB_addToRearC_ABC"/>
+	  <class name="Test_20_AB_addAfterCB_ABC"/>
+	  <class name="Test_25_AB_removeFirst_B"/>
+	  <class name="Test_26_AB_removeLast_A"/>
+	  <class name="Test_27_AB_removeA_B"/>
+	  <class name="Test_28_AB_removeB_A"/>
+	  <class name="Test_29_AB_remove0_B"/>
+	  <class name="Test_30_AB_remove1_A"/>
+	  <class name="Test_32_AB_set1C_AC"/>
+	  <class name="Test_36_ABC_removeB_AC"/>
     </classes>
     
   </test> <!-- IUDoubleLinkedList -->
-
+ 
 </suite> <!-- Indexed Unsorted List -->
