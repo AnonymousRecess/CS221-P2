@@ -121,7 +121,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 			DLLNode<T> newNode = new DLLNode<T>(element); // create newNode to hold element
 			current.setNext(newNode); // connect newNode to list
 			newNode.setNext(nextNode); // reconnect previous next to list
-			newNode.setPrevious(current);
+			newNode.setPrevious(current); // link list doubly for traversal backward
 			count++; // increment counter for # of elements in list
 			modCount++; // change made to list
 		}
@@ -177,7 +177,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 			if (currentNode.getElement().equals(element)) {
 				found = true;
 			} else {
-				previousNode = currentNode;
+				previousNode = currentNode; 
 				currentNode = currentNode.getNext();
 			}
 		}
@@ -219,7 +219,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 		currentNode.setNext(nextNode.getNext()); // connect previous node to index to node after index
 		value = nextNode.getElement(); //temporarily store value removed
 		nextNode.setNext(null); //disconnect from list
-		nextNode.setPrevious(currentNode);
+		nextNode.setPrevious(currentNode); // link list doubly for traversal backward
 		if (index == count - 1) {
 			tail = currentNode; // set tail if removing end node
 		}
@@ -326,13 +326,13 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 	@Override
 	public ListIterator<T> listIterator() {
 		// TODO Auto-generated method stub
-		return new ListUnimplementedIterator(); // not implemented
+		return new ListImplementedIterator(); // not implemented
 	}
 
 	@Override
 	public ListIterator<T> listIterator(int startingIndex) {
 		// TODO Auto-generated method stub
-		return new ListUnimplementedIterator(startingIndex); // not implemented
+		return new ListImplementedIterator(startingIndex); // not implemented
 	}
 
 	private class List2Iterator implements Iterator<T> {
@@ -350,7 +350,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 			current = null; // before next
 			previous = null; // before current
 			if(!isEmpty())
-			tail.setNext(end);
+			tail.setNext(end); // tail would be null if empty
 		}
 
 		@Override
@@ -403,68 +403,258 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 		}
 	}
 
-	private class ListUnimplementedIterator implements ListIterator<T> {
-		public ListUnimplementedIterator() {
-			throw new UnsupportedOperationException();
+	private class ListImplementedIterator implements ListIterator<T> {
+		private DLLNode<T> next; // node indicating next
+		private DLLNode<T> end; // node indicating end of linked list
+		private int iteratorModCount; // count to tell if list has changed
+		private Boolean canRemove; // flag for if a node can be removed
+		private Boolean calledLast; // True if next was called last, false if previous was called last
+		private Boolean canSet;
+		
+		public ListImplementedIterator() {
+			end = new DLLNode<T>(null);
+			if(isEmpty())
+			{
+			head = end; // only node in list
+			tail = end; // only node in list
+			}
+			next = head; // start next at first in list
+			iteratorModCount = modCount; // no differences when created
+			canRemove = false; // needs to call next first
+			canSet = false; // needs a call to next or previous first
+			if(!isEmpty())
+			tail.setNext(end); // can't call if empty
 		}
 
-		public ListUnimplementedIterator(int index) {
-			throw new UnsupportedOperationException();
+		public ListImplementedIterator(int index) { // starts cursor before index
+			end = new DLLNode<T>(null);
+			if(isEmpty())
+			{
+				head = end; // only node in list
+				tail = end; // only node in list
+			}
+			next = head; // start next at first in list
+			iteratorModCount = modCount; // no differences when created
+			canRemove = false; // needs to call next first
+			canSet = false; // needs a call to next or previous first
+			if(!isEmpty())
+			tail.setNext(end); // can't call if empty
+			if(count < index || index < 0) // check bounds
+			{
+				throw new IndexOutOfBoundsException();
+			}
+			if(index > 1) // progress as normal if index is 0
+			{
+			for (int i =0; i < index-1; i++) // move cursor to position before index
+			{
+				next.getNext().setPrevious(next);
+				next = next.getNext(); // finally set next to next node
+			}
+			}
 		}
 
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
+			if(next != end ) // end keeps track of if the cursor has passed through each element in list
+				return true;
 			return false;
 		}
 
 		@Override
 		public T next() {
 			// TODO Auto-generated method stub
-			return null;
+			checkModifications();
+			if (!hasNext()) {
+				throw new NoSuchElementException("End of list");
+			}
+			T value = next.getElement(); // temp variable for element at next
+			next.getNext().setPrevious(next);
+			next = next.getNext(); // finally set next to next node
+			canRemove = true; // can be removed after successful next call
+			calledLast = true; // boolean value to keep track of if previous or next was last called
+			canSet = true; // can set after calling next or previous
+			return value; // return value at next before moved
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			// TODO Auto-generated method stub
-			return false;
+			if(next == head || isEmpty())
+			{
+				return false; //cannot traverse backward past head
+			}
+			return true;
 		}
 
 		@Override
 		public T previous() {
-			// TODO Auto-generated method stub
-			return null;
+			checkModifications();
+			if(!hasPrevious())
+			{
+				throw new NoSuchElementException("Beginning of List");
+			}
+			T value;
+			if(next == end) // if at end of list
+			{
+				next = tail; // next moves back to tail
+				value = next.getElement(); //previous element in list
+			}
+			else
+			{
+			    value = next.getPrevious().getElement(); // previous element in list
+				next = next.getPrevious(); // move cursor back
+				next.setNext(next.getNext()); // set next of cursor
+				next.setPrevious(next.getPrevious()); // set previous of cursor
+				
+			}
+			canRemove = true;        // can remove after call to previous        
+			calledLast = false; // boolean value to keep track of if previous or next was last called
+			canSet = true; // can call set() after previous
+			return value; // return previous element
+			
 		}
 
 		@Override
 		public int nextIndex() {
 			// TODO Auto-generated method stub
-			return 0;
+			if(!hasNext())
+				return count; // returns size if at end of list
+			boolean found = false; // while loop flag
+			DLLNode<T> traversal = head; // node to traverse list
+			int index = 0; 
+			T temp = next.getElement(); // element to search for index of
+			while (!found && traversal != end) { // traverse until found or end
+				if (traversal.getElement().equals(temp)) {
+					found = true;
+				} else {
+					traversal = traversal.getNext();
+					index++;
+				}
+			}
+			return index; //return index of next call
 		}
 
 		@Override
 		public int previousIndex() {
 			// TODO Auto-generated method stub
-			return 0;
+			boolean found = false; // while loop flag
+			DLLNode<T> traversal = head; // node to traverse list
+			int index = 0;
+			if (!hasPrevious())
+				return -1;
+			T temp =(next.getPrevious().getElement()); // element to search for index of
+			while (!found && traversal != end) { // traverse until found or end
+				if (traversal.getElement().equals(temp)) {
+					found = true;
+				} else {
+					traversal = traversal.getNext();
+					index++;
+				}
+			}
+			return index; // return index of previous call
 		}
 
 		@Override
 		public void remove() {
-			// TODO Auto-generated method stub
+			checkModifications();
+			if(canRemove)
+			{
+				canRemove = false; // can't call consecutive removes
+				canSet = false; // can't call set after remove
+				count --; // decrement count
+				if(calledLast) // next was called last
+				{					
+					if (next.getPrevious() == head) // removing first element in list
+					{
+						next.setPrevious(null); // no previous node to first
+						head = next; // keep head at beginning of list
+					} 
+					else 
+					{
+						next.getPrevious().getPrevious().setNext(next); // can't call method on null, which is what previous is at current = head
+						next.setPrevious(next.getPrevious().getPrevious()); // connect previous node of cursor to new previous node
+					}
+					
+				}	
+				else // previous was called last
+				{
+					if(next == head) // removing first element in list
+					{
+						head = next.getNext(); // keep head at beginning
+						
+					}
+					else
+					{
+						next.getPrevious().setNext(next.getNext()); // set previous node to new next
+						next.getNext().setPrevious(next.getPrevious()); // set next node to new previous
+					}
+					if(next == tail)
+					{
+						tail = next.getPrevious(); // keep track of tail
+						
+					}
+					next = next.getNext(); 
+				}
+			}
+			else
+			throw new IllegalStateException();
 
 		}
 
 		@Override
 		public void set(T e) {
 			// TODO Auto-generated method stub
-
+			if(!canSet) // if next or previous were not called last or remove or add were called right before
+			{
+				throw new IllegalStateException();
+			}
+			if(calledLast)
+			{
+				next.getPrevious().setElement(e); // set element of last returned next 
+			}
+			else
+			{
+				next.setElement(e); // set element of last returned previous
+			}
 		}
 
 		@Override
 		public void add(T e) {
-			// TODO Auto-generated method stub
-
+			DLLNode<T> newNode = new DLLNode<T>(e); // new node to add
+			if(isEmpty())
+			{
+				head = newNode; // head is now the first new node
+				head.setNext(end); // connect to end
+				next.setPrevious(newNode); // connect previous of next to newNode
+				tail = head; // tail is now last node that isn't end
+			}
+			else if (next == head) // add at beginning
+			{
+				newNode.setNext(next); // connect to next
+				next.setPrevious(newNode); // connect to newNode
+				head = newNode; // keep track of head
+			}
+			
+			else if(next == end) // at end
+			{
+				tail = newNode; // new tail
+				tail.setNext(end); // next set to end
+				next.setPrevious(tail); // keep track of previous
+			}
+			
+			else // general case
+			{
+				next.getPrevious().setNext(newNode);
+				newNode.setNext(next);
+				next.setPrevious(newNode);
+			}
+			count ++; // increment count
+			canSet = false; // can't set after immediately adding
+			canRemove = false; // can't remove after immediately adding
 		}
-
+		private void checkModifications() {
+			if (iteratorModCount != modCount) { // error if list is changed outside iterator after instantiation of iterator
+				throw new ConcurrentModificationException("Changes made to list");
+			}
 	}
+}
 }

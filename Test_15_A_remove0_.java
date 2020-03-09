@@ -156,7 +156,7 @@ public class Test_15_A_remove0_ {
 	 * Test: listIterator() - a ListIterator object 
 	 * Expected Result: UnsupportedOperationException
 	 */
-	@Test(expectedExceptions = UnsupportedOperationException.class)
+	@Test
 	public void testListIterator()
 	{
 		TestCase.listIterator((IndexedUnsortedList<Character>)list);
@@ -166,7 +166,7 @@ public class Test_15_A_remove0_ {
 	 * Test: listIterator(INDEX) - a ListIterator object 
 	 * Expected Result: UnsupportedOperationException
 	 */
-	@Test(expectedExceptions = UnsupportedOperationException.class)
+	@Test
 	public void testListIterator_validIndex()
 	{
 		TestCase.listIterator((IndexedUnsortedList<Character>)list, VALID_ADD_INDEX);
@@ -176,7 +176,7 @@ public class Test_15_A_remove0_ {
 	 * Test: listIterator(INDEX) - a ListIterator object 
 	 * Expected Result: UnsupportedOperationException
 	 */
-	@Test(expectedExceptions = UnsupportedOperationException.class)
+	@Test(expectedExceptions = IndexOutOfBoundsException.class)
 	public void testListIterator_invalidIndex()
 	{
 		TestCase.listIterator((IndexedUnsortedList<Character>)list, INVALID_INDEX);
